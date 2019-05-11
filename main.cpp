@@ -27,7 +27,7 @@ struct Seznam {
 
 bool prazdny_seznam(Seznam& s)
 {
-    return s.hlava == s.zarazka;
+    return s.hlava == nullptr;
 }
 
 Seznam vytvor_seznam()
@@ -37,20 +37,29 @@ Seznam vytvor_seznam()
 
 void pridej_na_zacatek(Seznam& s, Clen* novy)
 {
-    novy->dalsi = s.hlava;
-    s.hlava = s.hlava->predchozi = novy;
+    if (prazdny_seznam(s)) {
+        s.hlava = novy;
+        s.zarazka = novy;
+    }
+    else {
+        novy->dalsi = s.hlava;
+        s.hlava = s.hlava->predchozi = novy;
+    }
 }
 
 void pridej_na_konec(Seznam& s, Clen *novy)
 {
     if (prazdny_seznam(s))
         pridej_na_zacatek(s, novy);
+    else if (s.hlava == s.zarazka) {
+        s.zarazka = novy;
+        s.hlava->dalsi = novy;
+        s.zarazka->predchozi = s.hlava;
+    }
     else {
-        novy->dalsi = s.zarazka;
-        novy->predchozi = s.zarazka->predchozi;
-
-        s.zarazka->predchozi = novy;
-        s.zarazka->predchozi->predchozi->dalsi = s.zarazka->predchozi;
+        novy->predchozi = s.zarazka;
+        s.zarazka->dalsi = novy;
+        s.zarazka = novy;
     }
 }
 
@@ -82,7 +91,7 @@ void nacist_ze_souboru(Seznam& s)
             vstup = vstup.substr(pracovn);
         }
 
-        Clen* novy = new Clen {
+        Clen novy = Clen {
             .krestni = data[0],
             .prijmeni = data[2],
             .narozeni = data[6],
@@ -96,7 +105,7 @@ void nacist_ze_souboru(Seznam& s)
             .predchozi = nullptr,
         };
 
-        pridej_na_konec(s, novy);
+        pridej_na_konec(s, &novy);
     }
 
     soubor.close();
@@ -158,7 +167,9 @@ void vypis_od_zacatku(Seznam& s)
         string datumpracovni;
         datumpracovni.assign(pomocny->narozeni);
         datumpracovni = "-" + datumpracovni + "-";
+
         for (int j = 0; j < 3; j++) {
+            cout << datumpracovni;
             datumpracovni = datumpracovni.substr(1);
             int pomoc = datumpracovni.find_first_of("-");
             rok_mesic_den[j].assign(datumpracovni.substr(0, pomoc));
@@ -168,12 +179,14 @@ void vypis_od_zacatku(Seznam& s)
         int rok = stoi(rok_mesic_den[0]);
         int mesic = stoi(rok_mesic_den[1]);
         int den = stoi(rok_mesic_den[2]);
+
         datumnarozeni[pom] = rok * 10000 + mesic * 100 + den;
         pomocny = pomocny->dalsi;
         pom++;
     }
 
     int poradinejstarsiho = 0;
+
     for (int i = 0; i < pocetosob; i++) {
         if (datumnarozeni[i] < datumnarozeni[poradinejstarsiho])
             poradinejstarsiho = i;
@@ -181,16 +194,34 @@ void vypis_od_zacatku(Seznam& s)
 
     int nejstarsipom = 0;
     pomocny = s.hlava;
+
     while (nejstarsipom != poradinejstarsiho) {
         pomocny = pomocny->dalsi;
         nejstarsipom++;
     }
-    cout << "Nejstarsi osobou je osoba c." << poradinejstarsiho << " " << pomocny->krestni << " " << pomocny->prijmeni << " - " << pomocny->narozeni << " - " << pomocny->vyska << "m - " << pomocny->hmotnost << "kg" << endl;
+
+    cout
+        << "Nejstarsi osobou je osoba c."
+        << poradinejstarsiho << " "
+        << pomocny->krestni << " "
+        << pomocny->prijmeni << " - "
+        << pomocny->narozeni << " - "
+        << pomocny->vyska << "m - "
+        << pomocny->hmotnost
+        << "kg"
+    << endl;
+}
+
+void count_list(Clen* c) {
+    cout << c->krestni << endl;
+    if (c->dalsi != nullptr)
+        count_list(c->dalsi);
 }
 
 int main()
 {
     Seznam S = vytvor_seznam();
+
     cout << "Dobry den, tento program umozni praci se seznamem lidi." << endl;
     cout << "Na zacatek vlozte soubok ukol1.txt do slozky s timto zdrojovym kodem a stisknete Enter" << endl;
     cin.get();
