@@ -105,23 +105,37 @@ void nacist_ze_souboru(Seznam& s)
 void vypis_od_zacatku(Seznam& s)
 {
     Clen* pomocny = s.hlava;
-    cout << "Takto vypada Vas seznam:" << endl;
     int pocetosob = 0;
+
+    cout << "Takto vypada Vas seznam:" << endl;
     cout << "Poradi - Jmeno - ID matka - Prijmeni - ID otce - vyska - vaha - datum narozeni - ID osoby" << endl;
     cout << "------------------------------------------------------------------------" << endl;
+
     while (pomocny != s.zarazka) {
-        string idotce;
-        string idmatky;
+        string id_otce;
+        string id_matky;
+
         if (pomocny->idmatky == "-1")
-            idmatky = "nezadano";
+            id_matky = "nezadano";
         else
             idmatky = pomocny->idmatky;
-        if (pomocny->idotce == "-1")
-            idotce = "nezadano";
-        else
-            idotce = pomocny->idotce;
 
-        cout << pocetosob + 1 << ". " << pomocny->krestni << pomocny->idmatky << "   " << pomocny->idmatky << "  " << pomocny->prijmeni << "   " << pomocny->idotce << "   " << pomocny->vyska << "m   " << pomocny->hmotnost << "kg    " << pomocny->narozeni << "   " << pomocny->idvlastni << endl;
+        if (pomocny->idotce == "-1")
+            id_otce = "nezadano";
+        else
+            id_otce = pomocny->idotce;
+
+        cout
+            << pocetosob + 1 << ". "
+            << pomocny->krestni << "   "
+            << id_matky << "   "
+            << pomocny->prijmeni << "   "
+            << id_otce << "   "
+            << pomocny->vyska << "m   "
+            << pomocny->hmotnost << "kg   "
+            << pomocny->narozeni << "   "
+            << pomocny->idvlastni
+        << endl;
 
         pomocny = pomocny->dalsi;
         pocetosob++;
