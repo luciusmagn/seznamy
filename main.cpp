@@ -15,7 +15,7 @@ struct Clen {
         id_vlastni,
         id_matky;
 
-    unsigned int vyska;
+    unsigned long int vyska;
     float hmotnost;
 
     Clen *dalsi, *predchozi;
@@ -143,7 +143,9 @@ void vypis_od_zacatku(Seznam& s)
 
     cout << endl;
     cout << "Na Vasem seznamu se nachazi " << pocetosob << " osob." << endl;
+
     int datumnarozeni[pocetosob];
+
     if (pocetosob == 0)
         return;
     for (int i = 0; i < pocetosob; i++)
@@ -189,10 +191,9 @@ void vypis_od_zacatku(Seznam& s)
 int main()
 {
     Seznam S = vytvor_seznam();
-    string enter;
     cout << "Dobry den, tento program umozni praci se seznamem lidi." << endl;
     cout << "Na zacatek vlozte soubok ukol1.txt do slozky s timto zdrojovym kodem a stisknete Enter" << endl;
-    cin >> enter;
+    cin.get();
     nacist_ze_souboru(S);
     vypis_od_zacatku(S);
     return 0;
