@@ -10,10 +10,10 @@ struct Clen {
     string prijmeni;
     string narozeni;
 
-    size_t
-    	idotce,
-    	idvlastni,
-    	idmatky;
+    ssize_t
+        id_otce,
+        id_vlastni,
+        id_matky;
 
     unsigned int vyska;
     float hmotnost;
@@ -30,55 +30,75 @@ bool prazdny_seznam(Seznam& s)
     return s.hlava == s.zarazka;
 }
 
-Seznam vytvor_seznam()
+struct Seznam* vytvor_seznam()
 {
     return new Seznam { nullptr, nullptr };
 }
 
-void pridej_na_zacatek(Seznam& s, string krestni, string idmatky, string prijmeni, string idotec, string vyska, string hmotnost, string narozeni, string idvlastni)
+void pridej_na_zacatek(Seznam& s, Clen* novy)
 {
-    s.hlava = s.hlava->predchozi = new Clen { krestni, idmatky, prijmeni, idotec, vyska, hmotnost, narozeni, idvlastni, s.hlava, nullptr };
+    novy->dalsi = s.hlava;
+    s.hlava = s.hlava->predchozi = novy;
 }
 
-void pridej_na_konec(Seznam& s, string krestni, string idmatky, string prijmeni, string idotec, string vyska, string hmotnost, string narozeni, string idvlastni)
+void pridej_na_konec(Seznam& s, Clen *novy)
 {
-
     if (prazdny_seznam(s))
-        pridej_na_zacatek(s, krestni, idmatky, prijmeni, idotec, vyska, hmotnost, narozeni, idvlastni);
-
+        pridej_na_zacatek(s, novy);
     else {
-        s.zarazka->predchozi = new Clen { krestni, idmatky, prijmeni, idotec, vyska, hmotnost, narozeni, idvlastni, s.zarazka, s.zarazka->predchozi };
+        novy->dalsi = s.zarazka;
+        novy->predchozi = s.zarazka->predchozi;
+
+        s.zarazka->predchozi = novy;
         s.zarazka->predchozi->predchozi->dalsi = s.zarazka->predchozi;
     }
 }
 
 void nacist_ze_souboru(Seznam& s)
 {
-    string enter;
+    string vstup;
     ifstream soubor;
+
     soubor.open("ukol1.txt");
+
     while (soubor.fail()) {
-        cout << "Soubor nelze otevrit, zkontrolujte zda-li je ve slozce s programem ulozen soubor ukol1.txt (po kontole stisknete 0)" << endl;
-        cin >> enter;
+        cout << "Soubor nelze otevrit, zkontrolujte zda je ve slozce s programem ulozen soubor ukol1.txt a stisknete Enter" << endl;
+        cin.get();
         soubor.open("ukol1.txt");
     }
-    string vstup;
+
+
     while (getline(soubor, vstup)) {
-        if (vstup.substr(0, 1) == "#" || vstup.length() == 0)
+        if (vstup.substr[0] == '#' || vstup.empty())
             continue;
 
         vstup = " " + vstup + " ";
+
         string data[8];
         for (int i = 0; i < 8; i++) {
-
             vstup = vstup.substr(1);
             int pracovn = vstup.find_first_of(" | ");
             data[i].assign(vstup.substr(0, pracovn));
             vstup = vstup.substr(pracovn);
         }
-        pridej_na_konec(s, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
-        //cout << data [1] <<  data [6] <<endl;
+
+        Clen* novy = new Clen {
+            .krestni = data[0],
+            .prijmeni = data[2],
+            .birthday = data[6],
+            .id_otce = stoi(data[3]),
+            .id_matky = stoi(data[1]),
+            .id = stoi(data[7]),
+            .vyska = stoul(data[4]),
+            .hmotnost = stof(data[5]),
+
+            .dalsi = nullptr,
+            .zarazka = nullptr,
+        };
+
+        pridej_na_konec(s, novy);
     }
+
     soubor.close();
 }
 
@@ -154,11 +174,10 @@ void vypis_od_zacatku(Seznam& s)
 
 int main()
 {
-    Seznam S;
-    vytvor_seznam(S);
+    Seznam S = vytvor_seznam();
     string enter;
     cout << "Dobry den, tento program umozni praci se seznamem lidi." << endl;
-    cout << "Na zacatek vlozte soubok ukol1.txt do slozky s timto zdrojovym kodem (az to bude, stisnkete napiste 0)" << endl;
+    cout << "Na zacatek vlozte soubok ukol1.txt do slozky s timto zdrojovym kodem a stisknete Enter" << endl;
     cin >> enter;
     nacist_ze_souboru(S);
     vypis_od_zacatku(S);
