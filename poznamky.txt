@@ -1,0 +1,256 @@
+#include <iostream>
+#include <fstream>
+#include <stdlib.h>
+#include <string>
+
+using namespace std;
+
+struct Clen
+{
+    string jmeno;
+    string prijmeni;
+    string narozeni;
+    string idotce;
+    string vlastniid;
+    string idmatky;
+    string vyska;
+    string hmotnost;
+    Clen *dalsi, *predchozi;
+};
+
+struct Seznam
+{
+    Clen *hlava, *zarazka;
+};
+
+void vytvor_seznam (Seznam & s);
+bool prazdny_seznam (Seznam & s);
+void smaz_prvniho (Seznam & s);
+void smaz_posledniho (Seznam & s);
+Clen * na(Seznam & s, int poradi);
+void smaz_clovekana (Seznam & s, Clen * mazany);
+void smaz_vsechny(Seznam & s);
+void smaz_seznam (Seznam & s);
+void pridej_na_zacatek (Seznam & s, string vyska, string idotce, string vlastniid, string hmotnost, string krestni, string narozeni, string idmatky, string prijmeni);
+void pridej_na_konec (Seznam & s, string vyska, string idotce, string vlastniid, string hmotnost, string krestni, string narozeni, string idmatky, string prijmeni);
+void pridej_na_misto (Seznam & s, string vyska, string idotce, string vlastniid, string hmotnost, string krestni, string narozeni, string idmatky, string prijmeni, Clen * namiste);
+void nacist_soubor (Seznam & s, string nazevsouboru);
+void vypis_od_zacatku (Seznam & s);
+char dej_volbu (Seznam & s);
+char provedoperaci (Seznam & s,char volba);
+
+void vytvor_seznam (Seznam & s)
+{
+    s.hlava = s.zarazka = new Clen {"","","","","","","","",nullptr,nullptr};
+}
+
+bool prazdny_seznam (Seznam & s)
+{
+ return s.hlava == s.zarazka;
+}
+
+void smaz_prvniho (Seznam & s)
+{
+    if(prazdny_seznam(s))
+        return;
+    Clen * pomocny = s.hlava;
+    s.hlava = s.hlava -> dalsi;
+    s.hlava -> predchozi = pomocny -> predchozi;
+    delete pomocny;
+}
+
+void smaz_posledniho (Seznam & s)
+{
+    if(prazdny_seznam(s))
+        return;
+
+    else if(s.hlava == s.zarazka -> predchozi)
+        smaz_prvniho(s);
+
+    else
+    {
+    Clen * pomocny = s.zarazka -> predchozi;
+    s.zarazka -> predchozi -> predchozi -> dalsi = s.zarazka;
+    s.zarazka -> predchozi = s.zarazka -> predchozi -> predchozi;
+    delete pomocny;
+    }
+}
+
+Clen * na(Seznam & s, int poradi)
+{
+    Clen * pomocny = s.hlava;
+    for(int i = 1; i < poradi; i++)
+        pomocny = pomocny -> dalsi;
+    return pomocny;
+}
+
+void smaz_clovekana (Seznam & s, Clen * mazany)
+{
+    if ( mazany == s.hlava)
+        smaz_prvniho(s);
+    else if (mazany == s.zarazka -> predchozi)
+        smaz_posledniho(s);
+    else
+    {
+    Clen * pomocny = mazany;
+    mazany -> predchozi -> dalsi = mazany -> dalsi;
+    mazany -> dalsi -> predchozi = mazany -> predchozi;
+    delete pomocny;
+    }
+}
+
+void smaz_vsechny(Seznam & s)
+{
+    while (!prazdny_seznam(s))
+        smaz_prvniho(s);
+}
+
+void smaz_seznam (Seznam & s)
+{
+    while(!prazdny_seznam(s))
+        smaz_prvniho(s);
+    delete s.zarazka;
+    s.hlava = s.zarazka = nullptr;
+}
+
+void pridej_na_zacatek (Seznam & s, string vyska, string idotce, string vlastniid, string hmotnost, string krestni, string narozeni, string idmatky, string prijmeni)
+{
+    s.hlava = s.hlava -> predchozi = new Clen {vyska, idotce, vlastniid, hmotnost, krestni, narozeni, idmatky, prijmeni, s.hlava, nullptr};
+}
+
+void pridej_na_konec (Seznam & s, string vyska, string idotce, string vlastniid, string hmotnost, string krestni, string narozeni, string idmatky, string prijmeni)
+{
+
+    if (prazdny_seznam(s))
+    pridej_na_zacatek (s,vyska,idotce,vlastniid,hmotnost,krestni,narozeni,idmatky,prijmeni);
+
+    else
+    {
+    s.zarazka -> predchozi = new Clen {vyska,idotce,vlastniid,hmotnost,krestni,narozeni,idmatky,prijmeni, s.zarazka, s.zarazka -> predchozi};
+    s.zarazka-> predchozi -> predchozi -> dalsi = s.zarazka -> predchozi;
+    }
+}
+
+void pridej_na_misto (Seznam & s, string vyska, string idotce, string vlastniid, string hmotnost, string krestni, string narozeni, string idmatky, string prijmeni, Clen * namiste)
+{
+    if (prazdny_seznam(s) || namiste == s.hlava)
+        pridej_na_zacatek(s,vyska,idotce,vlastniid,hmotnost,krestni,narozeni,idmatky,prijmeni);
+
+    else if (namiste -> predchozi == s.zarazka -> predchozi)
+        pridej_na_konec(s,vyska,idotce,vlastniid,hmotnost,krestni,narozeni,idmatky,prijmeni);
+
+    else
+        namiste -> predchozi -> dalsi = namiste -> predchozi -> dalsi = new Clen {vyska,idotce,vlastniid,hmotnost,krestni,narozeni,idmatky,prijmeni, namiste, namiste->predchozi};
+}
+
+void nacist_ze_souboru (Seznam & s)
+{
+    string enter;
+    ifstream soubor;
+    soubor.open("ukol1.txt");
+    while(soubor.fail())
+    {
+        cout << "Soubor nelze otevrit, zkontrolujte zda-li je ve slozce s programem ulozen soubor ukol1.txt (po kontole stisknete 0)" << endl;
+        cin >> enter;
+        soubor.open("ukol1.txt");
+    }
+    string vstup;
+    while (getline(soubor,vstup))
+    {
+        if(vstup.substr(0,1 )== "#" || vstup.length()==0)
+            continue;
+
+        vstup = " " + vstup + " ";
+        string data[8];
+        for (int i = 0; i < 8; i++)
+            {
+                vstup = vstup.substr (1);
+                int pracovn = vstup.find_first_of(" ");
+                data[i].assign(vstup.substr(0,pracovn));
+                vstup = vstup.substr(pracovn);
+            }
+        pridej_na_konec(s,data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
+    }
+   soubor.close();
+}
+
+void vypis_od_zacatku (Seznam & s)
+{
+  //system("CLS");
+  Clen * pomocny = s.hlava;
+  cout << "Takto vypada Vas seznam:" << endl;
+  int pocetosob = 0;
+  cout << "ID - Jmeno Prijmeni - Datum narozeni - Vyska - Vaha - ID matky - ID otce"<< endl;
+  cout <<"------------------------------------------------------------------------"<<endl;
+  while(pomocny != s.zarazka)
+  {
+      string idotce;
+      string idmatky;
+      if (pomocny -> idmatky == "-1") idmatky="xxxxx";
+      else idmatky = pomocny -> idmatky;
+      if (pomocny -> idotce == "-1") idotce="xxxxx";
+      else idotce = pomocny -> idotce;
+      cout<< pocetosob+1 << ". " << pomocny -> vlastniid << " - " << pomocny -> jmeno << " " << pomocny -> prijmeni << " - " << pomocny -> narozeni << " - " << pomocny -> vyska << "m - " << pomocny -> hmotnost << "kg - " << idmatky << " - " << idotce<< endl;
+      pomocny = pomocny -> dalsi;
+      pocetosob++;
+  }
+  cout << endl;
+  cout << "Na Vasem seznamu se nachazi " << pocetosob << " osob." << endl;
+  int datumnarozeni[pocetosob];
+  if (pocetosob==0) return;
+  for (int i=0;i<pocetosob;i++)
+    datumnarozeni[i]=0;
+  string rokmesicden[3];
+  int pom=0;
+  pomocny = s.hlava;
+  while (pomocny!= s.zarazka)
+    {
+        string datumpracovni;
+        datumpracovni.assign(pomocny->narozeni);
+        datumpracovni="-"+datumpracovni+"-";
+        for (int j=0;j<3;j++)
+        {
+            datumpracovni=datumpracovni.substr(1);
+            int pomoc = datumpracovni.find_first_of("-");
+            rokmesicden[j].assign(datumpracovni.substr(0,pomoc));
+            datumpracovni = datumpracovni.substr(pomoc);
+        }
+
+    int rok = stoi(rokmesicden[0]);
+    int mesic = stoi(rokmesicden[1]);
+    int den = stoi(rokmesicden[2]);
+    datumnarozeni[pom]=rok*10000+mesic*100+den;
+    pomocny=pomocny->dalsi;
+    pom++;
+    }
+
+    int poradinejstarsiho=0;
+    for (int i=0; i<pocetosob;i++)
+    {
+        if (datumnarozeni[i]<datumnarozeni[poradinejstarsiho])
+            poradinejstarsiho=i;
+    }
+
+    int nejstarsipom=0;
+    pomocny = s.hlava;
+    while (nejstarsipom!=poradinejstarsiho)
+    {
+        pomocny=pomocny->dalsi;
+        nejstarsipom++;
+    }
+    cout << "Nejstarsi osobou je osoba c." << poradinejstarsiho << " " << pomocny->jmeno << " " << pomocny->prijmeni << " - " << pomocny->narozeni << " - " << pomocny->vyska << "m - " << pomocny->hmotnost << "kg" << endl;
+}
+
+
+int main()
+{
+    Seznam S;
+    vytvor_seznam(S);
+    string enter;
+    cout << "Dobry den, tento program umozni praci se seznamem lidi." << endl;
+    cout << "Na zacatek vlozte soubok ukol1.txt do slozky s timto zdrojovym kodem (az to bude, stisnkete napiste 0)" << endl;
+    cin >> enter;
+    nacist_ze_souboru(S);
+    vypis_od_zacatku(S);
+    return 0;
+}

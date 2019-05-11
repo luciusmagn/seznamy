@@ -1,0 +1,126 @@
+# ZPRO - domaci ukol c. 1 (druha varianta) - prace s daty nactenymi ze souboru
+# * kod programu napiste do nekolika .cpp/.h souboru (napr. vstupy/vystupy, algoritmy, ...)
+# * nactete tento datovy soubor jehoz format je popsan nize
+#   (radky zacinajici znakem '#' znaci komentar a pri nacitani je preskocte)
+# * nactena data z radku ulozte do vhodne struktury
+# * jednotlive radky nactene ze souboru ulozte do pole
+#   - staci staticky alokovane pro X zaznamu (kde X je globalni konstanta)
+#   - pokud by bylo v souboru vice zaznamu vypiste chybovou hlasku
+# * s nactenymi daty provedte
+#   + vypiste informace o nejstarsi/nejmladsi osobe
+#   + vypiste prumernou vysku vsech osob starsich 20 let
+#   + vypiste vsechny pribuzne nejmladsi osoby
+#   + vypiste informace o osobach jejichz jmeno je v datovem souboru nejbeznejsi
+# * vysledky zapisujte do noveho vystupniho souboru
+#
+# struktura datoveho souboru:
+# * id .......... identifikacni cislo osoby
+# * givenName ... jmeno
+# * sn .......... prijmeni
+# * birthday .... datum narozeni YYYY-m-d
+# * height ...... vyska
+# * weight ...... vaha
+# * mother_id ... identifikacni cislo matky (-1 = nedefinovane)
+# * father_id ... identifikacni cislo otce (-1 = nedefinovane)
+#
+# givenName|mother_id|sn|father_id|height|weight|birthday|id
+Tereza|13836|Liskaova|60447|171|63.6|1986-9-18|35513
+Karel|39752|Polivka|61510|168|67.6|1938-10-6|45929
+Barbora|-1|Polivkaova|-1|162|38.5|1996-2-14|25427
+Assel|51301|Faitova|73315|166|51.8|1995-5-27|90009
+Jitka|-1|Judasova|-1|175|64.4|1969-6-25|35940
+Zuzana|60253|Herainova|61220|193|59.4|1983-2-9|26836
+Tomas|-1|Krc|-1|177|64.0|1988-9-23|78645
+Lucie|-1|Ferencova|-1|175|59.6|1926-6-21|42749
+Milena|26836|Herainova|-1|124|33.5|2009-7-6|63621
+Ludek|-1|Vana|-1|178|70.9|1981-8-26|97579
+Kristyna|26836|Herainova|-1|117|30.2|2008-3-28|60189
+Vojtech|96210|Judas|78010|167|47.1|1969-3-8|90427
+Petr|42749|Ferenc|-1|167|47.0|1952-11-8|92913
+Lukas|34520|Toth|-1|174|60.5|1966-6-1|69562
+Terezie|86821|Vanaova|97579|103|24.4|2008-9-8|99305
+Ondrej|92751|Maly|93992|163|53.4|1976-1-7|73806
+Eva|-1|Polivkaova|-1|177|67.9|1919-5-8|39752
+Eva|98688|Malyova|52598|120|28.2|2009-6-12|53004
+Lukas|-1|Beranek|-1|179|74.6|1987-4-27|84746
+Martin|59217|Polivka|76645|190|67.3|1996-1-12|67842
+Petr|-1|Kotlar|-1|183|67.9|1984-7-19|98936
+Vit|-1|Frauknecht|-1|171|55.5|1973-12-22|73895
+Katarina|-1|Svorcikova|-1|166|57.5|1971-3-8|34863
+Zuzana|31367|Kodetova|91629|172|66.6|1958-4-21|11776
+Kristyna|-1|Chmelova|-1|189|78.3|1960-3-15|51118
+Stanislav|96210|Judas|78010|157|41.8|1969-9-23|16692
+Marketa|51118|Vanickyova|22015|177|84.1|1981-3-18|24813
+Dana|-1|Malyova|-1|183|70.3|1951-4-15|92751
+Karolina|-1|Tothova|-1|181|81.4|1939-8-26|34520
+David|34514|Maly|82901|183|64.1|1945-12-11|26022
+Ondrej|29250|Ferenc|92913|179|66.9|1974-5-3|73315
+Ivana|37266|Polivkaova|95096|44|2.5|2023-1-14|16060
+Daniel|79048|Maly|26022|161|60.2|1968-4-2|39956
+Magdalena|92751|Frauknechtova|93992|178|60.6|1978-2-12|26982
+Denisa|76712|Rovnerova|97812|176|59.9|2001-1-3|31462
+Vaclav|24759|Kolovratnik|45668|92|15.1|2011-5-14|66164
+Lucie|59217|Polivkaova|76645|165|52.7|1997-5-13|49277
+Ksenia|79631|Vanaova|34798|180|59.8|1989-9-6|86821
+Pavel|-1|Polivka|-1|186|62.2|1970-6-13|76645
+Petr|92751|Maly|93992|183|62.0|1978-9-9|52598
+Lucie|49863|Kadlecova|-1|162|57.4|1987-12-23|50702
+Petr|35940|Judas|90427|182|75.1|1996-11-11|92742
+Lukas|-1|Vanicky|-1|174|70.1|1979-5-12|96787
+Alexandr|-1|Fait|-1|192|85.1|1994-9-26|69575
+Jiri|-1|Judas|-1|170|46.6|1944-5-19|78010
+Eva|40764|Korinekova|66063|179|54.9|1963-12-3|49863
+Filip|95165|Beranek|84746|79|9.0|2014-7-10|64862
+Vojtech|29250|Ferenc|92913|182|73.8|1972-11-23|97841
+Jan|-1|Serkop|-1|180|82.8|1990-3-27|29491
+Olga|-1|Judasova|-1|178|66.6|1993-3-10|93687
+Jiri|-1|Sikora|-1|170|64.4|1993-8-5|70223
+David|34863|Svorcik|41524|187|75.9|1995-8-6|23330
+Tomas|-1|Polivka|-1|162|54.7|1913-3-20|61510
+Lubos|-1|Svorcik|-1|174|67.6|1969-1-9|41524
+Jan|-1|Maly|-1|168|68.1|1920-5-9|82901
+Vojtech|60315|Ferenc|97841|162|59.7|1999-3-10|21057
+Tereza|-1|Dobryova|-1|176|72.7|1960-3-8|60253
+Kristyna|79838|Serkopova|29491|93|11.4|2015-6-1|41874
+Stepan|-1|Liska|-1|168|67.5|1981-8-22|99638
+Miroslava|-1|Dobryova|-1|167|65.5|1960-4-9|13836
+Klara|-1|Polivkaova|-1|188|82.6|1995-8-11|37266
+Radka|39752|Macikova|61510|167|56.4|1938-11-10|31367
+Leos|34863|Svorcik|41524|177|76.4|1993-3-27|62121
+Lenka|-1|Malyova|-1|169|67.6|2000-2-18|77105
+Veronika|-1|Malyova|-1|188|93.0|1977-11-11|73743
+Laura|11176|Pohlova|44345|150|49.8|2001-10-28|53846
+Robert|24813|Vanicky|96787|134|26.1|2003-6-25|16865
+Martin|24813|Vanicky|96787|150|47.2|2006-1-24|64139
+Jan|60315|Ferenc|97841|185|67.2|1997-12-11|35106
+Anna|11776|Beranekova|27894|181|59.8|1985-1-28|95165
+Dominika|-1|Malyova|-1|179|74.2|1927-9-26|34514
+Pavel|40764|Dobry|66063|194|87.4|1962-9-17|60447
+Vladimir|-1|Holec|-1|177|78.1|1923-10-6|85659
+Katerina|-1|Polivkaova|-1|175|69.2|1940-3-11|21164
+Petra|24759|Kolovratnikova|45668|125|26.6|2010-11-26|83318
+Jan|79838|Serkop|29491|78|11.6|2016-1-14|12850
+Katerina|60253|Kotlarova|61220|165|57.9|1984-12-8|66882
+Monika|79631|Krcova|34798|189|64.2|1988-7-9|91473
+Katerina|91473|Krcova|78645|101|18.3|2013-11-18|52001
+Pavel|-1|Pohl|-1|186|51.9|1975-3-5|44345
+Tereza|82956|Sikoraova|36257|162|57.4|1997-6-25|73553
+Jan|-1|Macik|-1|179|71.5|1934-12-13|91629
+Petra|-1|Ferencova|-1|189|65.8|1949-12-14|29250
+Katerina|24759|Kolovratnikova|45668|117|22.2|2011-11-11|56280
+Zuzana|76712|Misekova|97812|185|73.1|1997-11-26|81139
+Marie|-1|Judasova|-1|174|52.7|1971-12-8|82956
+Tomas|82956|Judas|36257|179|67.9|1997-9-22|57692
+Jana|98688|Malyova|52598|116|27.4|2012-3-20|39129
+Radim|34520|Toth|-1|189|73.8|1962-5-25|34798
+Jan|34863|Svorcik|41524|176|64.5|1995-4-17|32014
+David|59217|Polivka|76645|161|48.7|1995-7-3|95096
+Klara|26982|Krsnakova|73895|175|43.7|1996-7-20|71168
+Denisa|26836|Herainova|-1|136|34.9|2007-11-27|73515
+Eva|-1|Svorcikova|-1|174|65.0|1996-7-4|16250
+Jan|40764|Dobry|66063|153|54.1|1960-4-26|61220
+Maksym|25427|Polivka|67842|80|9.6|2020-8-20|67478
+Petra|-1|Ferencova|-1|171|49.3|1974-2-15|51301
+Veronika|-1|Judasova|-1|186|56.1|1998-1-23|25119
+Lucie|-1|Malyova|-1|177|70.8|1944-10-10|79048
+Zdenka|-1|Judasova|-1|200|90.7|1967-8-27|50868

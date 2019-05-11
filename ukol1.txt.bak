@@ -1,0 +1,126 @@
+# ZPRO - domaci ukol c. 1 (druha varianta) - prace s daty nactenymi ze souboru
+# * kod programu napiste do nekolika .cpp/.h souboru (napr. vstupy/vystupy, algoritmy, ...)
+# * nactete tento datovy soubor jehoz format je popsan nize
+#   (radky zacinajici znakem '#' znaci komentar a pri nacitani je preskocte)
+# * nactena data z radku ulozte do vhodne struktury
+# * jednotlive radky nactene ze souboru ulozte do pole
+#   - staci staticky alokovane pro X zaznamu (kde X je globalni konstanta)
+#   - pokud by bylo v souboru vice zaznamu vypiste chybovou hlasku
+# * s nactenymi daty provedte
+#   + vypiste informace o vsech osobach s prijmenim X (zvolte existujici prijmeni)
+#   + vypiste prumernou vysku vsech osob starsich 20 let
+#   + vypiste vsechny potomky nejstarsi osoby
+#   + vypiste informace o osobach jejichz jmeno se vyskytuje pouze jednou
+# * vysledky zapisujte do noveho vystupniho souboru
+#
+# struktura datoveho souboru:
+# * id .......... identifikacni cislo osoby
+# * givenName ... jmeno
+# * sn .......... prijmeni
+# * birthday .... datum narozeni YYYY-m-d
+# * height ...... vyska
+# * weight ...... vaha
+# * mother_id ... identifikacni cislo matky (-1 = nedefinovane)
+# * father_id ... identifikacni cislo otce (-1 = nedefinovane)
+#
+# height father_id id weight givenName birthday mother_id sn
+173 56229 33897 53.7 Lucie 1983-11-19 44694 Cirhanova
+186 97829 86726 82.8 Kristyna 1967-12-18 82669 Braunova
+184 29130 65526 81.9 Zuzana 1963-5-2 35960 Kukulskyova
+186 29130 18671 86.7 Pavla 1965-1-17 35960 Smehylova
+183 37863 40044 76.5 Tomas 1989-1-13 15913 Reznicek
+170 -1 88310 63.1 Matej 1995-10-8 -1 Pirkl
+183 -1 29130 65.2 Petr 1936-12-23 -1 Orsak
+180 47476 88478 59.7 Tomas 1989-3-19 78300 Stranik
+96 88478 91683 15.9 Jakub 2012-2-20 65287 Stranik
+169 76716 91844 58.2 Jiri 1986-10-1 37849 Hrachovec
+181 -1 29186 73.9 Jakub 1955-11-2 -1 Pleyer
+191 29186 57470 75.4 Ales 1980-11-14 39766 Pleyer
+104 57470 37684 22.6 Jakub 2013-8-27 54131 Pleyer
+168 -1 95604 63.7 Martina 1984-4-2 -1 Koblasova
+118 -1 21514 21.8 Radka 2013-4-5 20864 Levyova
+176 37863 94304 62.4 Marek 1989-4-27 15913 Reznicek
+179 -1 26350 73.1 Jaromir 1984-1-21 -1 Cirhan
+164 89379 73574 41.7 Karolina 2002-6-25 97908 Vaneckova
+170 34290 44694 58.0 Adela 1965-1-12 84887 Cirhanova
+181 -1 78785 69.8 Lucie 1993-4-13 -1 Reznicekova
+182 -1 94302 69.0 Ondrej 1947-6-16 -1 Vaneck
+192 -1 38989 70.0 Anna 1947-9-4 -1 Maderaova
+168 -1 91685 61.3 Tereza 1999-2-7 -1 Stranikova
+98 48673 44711 21.0 Pavel 2011-1-7 34523 Reznicek
+148 71897 55144 43.3 Andrea 2003-3-8 58831 Musilova
+160 13664 22637 56.2 Anna 1996-7-18 98049 Rindova
+178 47476 81284 71.2 Kristyna 1990-7-10 78300 Svancarova
+179 29186 32194 75.1 David 1982-1-17 39766 Pleyer
+171 -1 98584 61.9 Kamila 1925-8-6 -1 Ciperaova
+98 31948 81262 15.9 Stanislav 2015-6-2 49765 Kopecky
+121 26350 17693 25.1 Jan 2011-12-3 33897 Cirhan
+185 34290 92633 69.9 Petra 1964-7-12 84887 Kopeckyova
+184 47476 15929 75.9 David 1991-11-3 78300 Stranik
+155 -1 86797 44.1 Gabriela 1983-5-10 -1 Hanusova
+118 36742 41324 30.9 Tomas 2010-5-12 95604 Koblas
+170 -1 79079 46.0 Petr 1981-12-6 -1 Lasek
+170 29186 30827 69.0 Eliska 1982-7-23 39766 Vicanova
+186 52969 67246 69.1 Marie 1979-4-3 21628 Holanova
+175 -1 49765 70.9 Katerina 1990-8-14 -1 Kopeckyova
+162 83211 21628 47.2 Aneta 1948-11-15 98584 Domasova
+174 -1 50017 74.4 Klara 1979-11-15 -1 Lasekova
+169 -1 71897 68.1 Tomas 1977-8-26 -1 Musil
+168 -1 34290 69.0 Petr 1933-4-28 -1 Kopecky
+124 57470 40848 30.6 Katerina 2010-11-6 54131 Pleyerova
+110 71520 13474 24.9 Tereza 2008-10-22 45766 Suchomelova
+147 89379 91974 36.9 Ondrej 2003-1-20 97908 Vaneck
+168 -1 36742 58.5 Tomas 1983-6-16 -1 Koblas
+177 97829 47476 59.2 Michael 1967-9-1 82669 Stranik
+120 48673 79420 22.5 Radomir 2011-9-1 34523 Reznicek
+187 -1 97830 72.1 Jiri 1961-8-23 -1 Kukulsky
+185 -1 99430 64.4 Vladimir 1980-11-20 -1 Domas
+161 -1 48673 53.5 Patrik 1983-8-19 -1 Reznicek
+129 48673 40498 24.2 Aneta 2010-4-23 34523 Reznicekova
+179 -1 82669 73.2 Eva 1941-1-9 -1 Stranikova
+167 28627 78672 51.8 Eva 1981-11-2 92633 Kovarikova
+133 32194 99287 28.7 Jan 2008-12-1 52988 Pleyer
+156 -1 76716 47.2 Tomas 1962-11-3 -1 Hrachovec
+189 -1 27087 83.7 Jan 1983-11-12 -1 Hanus
+169 13664 29568 51.4 Marie 2001-6-13 98049 Pikousova
+131 27087 91770 35.9 Anna 2006-1-20 86797 Hanusova
+169 94302 98049 56.7 Kristyna 1973-4-25 75557 Pikousova
+173 -1 77969 62.1 Lucia 1994-8-23 -1 Reznicekova
+137 91844 56495 38.1 Martin 2006-7-9 95107 Hrachovec
+180 -1 78871 66.3 Jaromir 2000-3-18 -1 Stefunk
+183 -1 28627 84.3 Lukas 1957-5-21 -1 Kopecky
+181 -1 77456 55.7 Jan 1960-5-8 -1 Kadurek
+157 36586 30857 59.6 Lucie 1970-3-11 38989 Dostalova
+160 76716 45766 62.6 Lucie 1988-6-1 37849 Suchomelova
+177 -1 95107 55.7 Tereza 1984-11-26 -1 Hrachovecova
+184 -1 37863 72.4 Pavel 1964-6-26 -1 Reznicek
+110 -1 34209 20.9 Lenka 2013-7-15 -1 Hamarova
+179 -1 84887 59.9 Eliska 1940-4-6 -1 Kopeckyova
+186 -1 43302 75.7 Tomas 1973-7-23 -1 Holan
+174 52969 48734 65.4 Erika 1978-10-3 21628 Domasova
+189 -1 52988 81.1 Klara 1982-12-6 -1 Pleyerova
+198 -1 97908 74.3 Zuzana 1977-11-17 -1 Vaneckova
+179 43302 42090 70.1 Pavlina 1996-11-6 67246 Holanova
+178 97829 37849 56.6 Zuzana 1966-11-2 82669 Hrachovecova
+166 -1 56229 53.7 Petr 1959-11-1 -1 Cirhan
+189 28627 58831 70.7 Marie 1982-2-8 92633 Musilova
+169 89379 23199 55.7 Jakub 2001-8-15 97908 Vaneck
+173 -1 35960 69.6 Zuzana 1939-3-14 -1 Orsakova
+114 26350 57288 20.9 Lucie 2011-12-14 33897 Cirhanova
+178 -1 15483 61.8 Simon 1970-10-3 -1 Dostal
+164 -1 68813 56.1 Krzysztof 1974-12-4 -1 Kovarik
+178 -1 97063 70.9 Michal 1961-4-25 -1 Smehyl
+188 94302 89379 72.2 Csaba 1973-5-26 75557 Vaneck
+160 -1 54131 60.3 Polina 1986-11-5 -1 Pleyerova
+188 37863 34523 83.0 Marie 1987-1-16 15913 Reznicekova
+166 -1 71520 56.0 Michal 1983-5-24 -1 Suchomel
+170 37863 20864 57.8 Hana 1988-5-4 15913 Levyova
+171 -1 83211 46.9 Petr 1924-7-11 -1 Cipera
+182 13664 68641 57.1 Radka 1997-3-13 98049 Manenaova
+172 28627 31948 47.0 Jan 1982-1-27 92633 Kopecky
+161 -1 13664 58.1 Jiri 1973-9-22 -1 Pikous
+167 -1 98828 62.0 Pavel 1984-2-6 -1 Svancar
+155 89379 61476 52.6 Petr 2002-12-16 97908 Vaneck
+176 97829 39766 75.3 Marketa 1966-8-19 82669 Pleyerova
+163 -1 15913 60.0 Elizaveta 1959-4-13 -1 Reznicekova
+179 -1 45301 57.6 Pavel 1997-11-27 -1 Manena
