@@ -9,11 +9,15 @@ struct Clen {
     string krestni;
     string prijmeni;
     string narozeni;
-    string idotce;
-    string idvlastni;
-    string idmatky;
-    string vyska;
-    string hmotnost;
+
+    size_t
+    	idotce,
+    	idvlastni,
+    	idmatky;
+
+    unsigned int vyska;
+    float hmotnost;
+
     Clen *dalsi, *predchozi;
 };
 
@@ -21,26 +25,26 @@ struct Seznam {
     Clen *hlava, *zarazka;
 };
 
-bool prazdnyseznam(Seznam& s)
+bool prazdny_seznam(Seznam& s)
 {
     return s.hlava == s.zarazka;
 }
 
-void vytvor_seznam(Seznam& s)
-{ //vyska
-    s.hlava = s.zarazka = new Clen { "", "", "", "", "", "", "", "", nullptr, nullptr };
+Seznam vytvor_seznam()
+{
+    return new Seznam { nullptr, nullptr };
 }
 
-void pridejnazacatek(Seznam& s, string krestni, string idmatky, string prijmeni, string idotec, string vyska, string hmotnost, string narozeni, string idvlastni)
+void pridej_na_zacatek(Seznam& s, string krestni, string idmatky, string prijmeni, string idotec, string vyska, string hmotnost, string narozeni, string idvlastni)
 {
     s.hlava = s.hlava->predchozi = new Clen { krestni, idmatky, prijmeni, idotec, vyska, hmotnost, narozeni, idvlastni, s.hlava, nullptr };
 }
 
-void pridejnakonec(Seznam& s, string krestni, string idmatky, string prijmeni, string idotec, string vyska, string hmotnost, string narozeni, string idvlastni)
+void pridej_na_konec(Seznam& s, string krestni, string idmatky, string prijmeni, string idotec, string vyska, string hmotnost, string narozeni, string idvlastni)
 {
 
-    if (prazdnyseznam(s))
-        pridejnazacatek(s, krestni, idmatky, prijmeni, idotec, vyska, hmotnost, narozeni, idvlastni);
+    if (prazdny_seznam(s))
+        pridej_na_zacatek(s, krestni, idmatky, prijmeni, idotec, vyska, hmotnost, narozeni, idvlastni);
 
     else {
         s.zarazka->predchozi = new Clen { krestni, idmatky, prijmeni, idotec, vyska, hmotnost, narozeni, idvlastni, s.zarazka, s.zarazka->predchozi };
@@ -72,7 +76,7 @@ void nacist_ze_souboru(Seznam& s)
             data[i].assign(vstup.substr(0, pracovn));
             vstup = vstup.substr(pracovn);
         }
-        pridejnakonec(s, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+        pridej_na_konec(s, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
         //cout << data [1] <<  data [6] <<endl;
     }
     soubor.close();
