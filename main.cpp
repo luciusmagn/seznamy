@@ -30,9 +30,9 @@ bool prazdny_seznam(Seznam& s)
     return s.hlava == s.zarazka;
 }
 
-struct Seznam* vytvor_seznam()
+Seznam vytvor_seznam()
 {
-    return new Seznam { nullptr, nullptr };
+    return Seznam { nullptr, nullptr };
 }
 
 void pridej_na_zacatek(Seznam& s, Clen* novy)
@@ -69,7 +69,7 @@ void nacist_ze_souboru(Seznam& s)
 
 
     while (getline(soubor, vstup)) {
-        if (vstup.substr[0] == '#' || vstup.empty())
+        if (vstup[0] == '#' || vstup.empty())
             continue;
 
         vstup = " " + vstup + " ";
@@ -85,15 +85,15 @@ void nacist_ze_souboru(Seznam& s)
         Clen* novy = new Clen {
             .krestni = data[0],
             .prijmeni = data[2],
-            .birthday = data[6],
+            .narozeni = data[6],
             .id_otce = stoi(data[3]),
+            .id_vlastni = stoi(data[7]),
             .id_matky = stoi(data[1]),
-            .id = stoi(data[7]),
             .vyska = stoul(data[4]),
             .hmotnost = stof(data[5]),
 
             .dalsi = nullptr,
-            .zarazka = nullptr,
+            .predchozi = nullptr,
         };
 
         pridej_na_konec(s, novy);
@@ -115,15 +115,15 @@ void vypis_od_zacatku(Seznam& s)
         string id_otce;
         string id_matky;
 
-        if (pomocny->idmatky == "-1")
+        if (pomocny->id_matky == -1)
             id_matky = "nezadano";
         else
-            idmatky = pomocny->idmatky;
+            id_matky = pomocny->id_matky;
 
-        if (pomocny->idotce == "-1")
+        if (pomocny->id_otce == -1)
             id_otce = "nezadano";
         else
-            id_otce = pomocny->idotce;
+            id_otce = pomocny->id_otce;
 
         cout
             << pocetosob + 1 << ". "
@@ -134,7 +134,7 @@ void vypis_od_zacatku(Seznam& s)
             << pomocny->vyska << "m   "
             << pomocny->hmotnost << "kg   "
             << pomocny->narozeni << "   "
-            << pomocny->idvlastni
+            << pomocny->id_vlastni
         << endl;
 
         pomocny = pomocny->dalsi;
