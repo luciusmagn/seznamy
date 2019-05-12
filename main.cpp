@@ -120,7 +120,7 @@ void vypis_od_zacatku(Seznam& s)
     cout << "Poradi - Jmeno - ID matka - Prijmeni - ID otce - vyska - vaha - datum narozeni - ID osoby" << endl;
     cout << "------------------------------------------------------------------------------------------" << endl;
 
-    while (pomocny != s.zarazka) {
+    while (pomocny != s.zarazka && pomocny != nullptr) {
         string id_otce;
         string id_matky;
 
@@ -254,15 +254,15 @@ void smaz_posledniho(Seznam& s)
 
 void smaz_na(Seznam& s, Clen* mazany)
 {
-    if (mazany==s.hlava)
+    if (mazany == s.hlava)
         smaz_prvniho(s);
-    else if (mazany==s.zarazka->predchozi)
+    else if (mazany == s.zarazka)
         smaz_posledniho(s);
     else
     {
         Clen* pomocny = mazany;
-        mazany->predchozi->dalsi=mazany->dalsi;
-        mazany->dalsi->predchozi=mazany->predchozi;
+        mazany->predchozi->dalsi = mazany->dalsi;
+        mazany->dalsi->predchozi = mazany->predchozi;
         delete pomocny;
     }
 }
@@ -277,33 +277,34 @@ void pridej_na_misto(Seznam& s, Clen* namiste)
 {
     if (prazdny_seznam(s) || namiste == s.hlava)
         pridej_na_zacatek(s, namiste);
-
     else if (namiste->predchozi == s.zarazka->predchozi)
         pridej_na_konec(s, namiste);
-
     else
+    {
         namiste->predchozi = s.zarazka;
         s.zarazka->dalsi = namiste;
         s.zarazka = namiste;
+    }
 }
 
 char vol_operaci(Seznam& s)
 {
     char volba;
+
     cout<<"Co si prejete s Vasim seznamem delat?"<< endl;
+
     if (prazdny_seznam(s))
     {
         cout<<"Pridat osobu ...... a" << endl;
         cout << "Zadejte: ";
         cin >> volba;
         cout << endl;
-        while (volba!=97 && volba!=103)
+        while (volba != 97 && volba != 103)
         {
             cout << "Zadali jste neplatne pismeno.";
             cin >> volba;
         }
     }
-
     else
     {
         cout<<"Pridat osobu na zacatek ...... a" << endl;
@@ -323,6 +324,7 @@ char vol_operaci(Seznam& s)
                 cout << endl;
             }
     }
+
     return volba;
 }
 
@@ -472,7 +474,7 @@ int main()
     cin.get();
     nacist_ze_souboru(S);
     vypis_od_zacatku(S);
-    proved_operaci(S,vol_operaci(S));
+    proved_operaci(S, vol_operaci(S));
 
     return 0;
 }
