@@ -211,42 +211,48 @@ void vypis_od_zacatku(Seznam& s)
     << endl << endl;
 }
 
-void smaz_prvniho (Seznam& s)
+void smaz_prvniho(Seznam& s)
 {
-    if(prazdny_seznam(s))
+    if (prazdny_seznam(s))
         return;
-    Clen* pomocny = s.hlava;
-    s.hlava = s.hlava->dalsi;
-    s.hlava->predchozi=pomocny->predchozi;
-    delete pomocny;
+    else if (s.hlava->dalsi == nullptr)
+    {
+        delete s.hlava;
+        s.hlava = nullptr;
+    }
+    else
+    {
+        Clen* pomocny = s.hlava;
+        s.hlava = s.hlava->dalsi;
+        s.hlava->predchozi = nullptr;
+        delete pomocny;
+    }
 }
 
 Clen* na_pozici(Seznam& s, unsigned int poradi)
 {
     Clen* pomocny = s.hlava;
-    for(int i=1; i<poradi ; i++)
+    for (int i = 1; i < poradi; i++)
         pomocny = pomocny->dalsi;
     return pomocny;
 }
 
-void smaz_posledniho (Seznam& s)
+void smaz_posledniho(Seznam& s)
 {
-    if(prazdny_seznam(s))
+    if (prazdny_seznam(s))
         return;
-
-    else if(s.hlava==s.zarazka->predchozi)
+    else if (s.hlava->dalsi == nullptr)
         smaz_prvniho(s);
-
     else
     {
-    Clen* pomocny = s.zarazka->predchozi;
-    s.zarazka->predchozi->predchozi->dalsi=s.zarazka;
-    s.zarazka->predchozi = s.zarazka->predchozi->predchozi;
-    delete pomocny;
+        Clen* pomocny = s.zarazka;
+        s.zarazka = s.zarazka->predchozi;
+        s.zarazka->dalsi = nullptr;
+        delete pomocny;
     }
 }
 
-void smaz_na (Seznam& s, Clen* mazany)
+void smaz_na(Seznam& s, Clen* mazany)
 {
     if (mazany==s.hlava)
         smaz_prvniho(s);
@@ -254,10 +260,10 @@ void smaz_na (Seznam& s, Clen* mazany)
         smaz_posledniho(s);
     else
     {
-    Clen* pomocny = mazany;
-    mazany->predchozi->dalsi=mazany->dalsi;
-    mazany->dalsi->predchozi=mazany->predchozi;
-    delete pomocny;
+        Clen* pomocny = mazany;
+        mazany->predchozi->dalsi=mazany->dalsi;
+        mazany->dalsi->predchozi=mazany->predchozi;
+        delete pomocny;
     }
 }
 
@@ -267,13 +273,13 @@ void smaz_vsechny(Seznam& s)
         smaz_prvniho(s);
 }
 
-void pridej_na_misto (Seznam& s,Clen* namiste)
+void pridej_na_misto(Seznam& s, Clen* namiste)
 {
     if (prazdny_seznam(s) || namiste == s.hlava)
-        pridej_na_zacatek(s,namiste);
+        pridej_na_zacatek(s, namiste);
 
     else if (namiste->predchozi == s.zarazka->predchozi)
-        pridej_na_konec(s,namiste);
+        pridej_na_konec(s, namiste);
 
     else
         namiste->predchozi = s.zarazka;
@@ -281,7 +287,7 @@ void pridej_na_misto (Seznam& s,Clen* namiste)
         s.zarazka = namiste;
 }
 
-char vol_operaci (Seznam& s)
+char vol_operaci(Seznam& s)
 {
     char volba;
     cout<<"Co si prejete s Vasim seznamem delat?"<< endl;
@@ -293,7 +299,7 @@ char vol_operaci (Seznam& s)
         cout << endl;
         while (volba!=97 && volba!=103)
         {
-            cout << "Zadali jste neplatné písmeno.";
+            cout << "Zadali jste neplatne pismeno.";
             cin >> volba;
         }
     }
@@ -320,12 +326,11 @@ char vol_operaci (Seznam& s)
     return volba;
 }
 
-char proved_operaci (Seznam & s,char volba)
+char proved_operaci (Seznam & s, char volba)
 {
     string udaj [8];
     if (volba=='a')
     {
-
             cout << "Napiste krestni jmeno osoby: ";
             cin >> udaj [0];
             cout << "Napiste prijmeni osoby: ";
@@ -361,7 +366,6 @@ char proved_operaci (Seznam & s,char volba)
     }
     else if (volba=='b')
     {
-
             cout << "Napiste krestni jmeno osoby: ";
             cin >> udaj [0];
             cout << "Napiste prijmeni osoby: ";
@@ -399,7 +403,6 @@ char proved_operaci (Seznam & s,char volba)
     }
     else if (volba=='c')
     {
-
         unsigned int misto;
         cout << "Napiste na jake misto chcete pridat osobu: ";
         cin >> misto;
