@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdlib.h>
+#include <iomanip>
 #include <string>
 
 using namespace std;
@@ -76,7 +77,6 @@ void nacist_ze_souboru(Seznam& s)
         soubor.open("ukol1.txt");
     }
 
-
     while (getline(soubor, vstup)) {
         if (vstup[0] == '#' || vstup.empty())
             continue;
@@ -91,7 +91,7 @@ void nacist_ze_souboru(Seznam& s)
             vstup = vstup.substr(pracovn);
         }
 
-        Clen novy = Clen {
+        Clen* novy = new Clen {
             .krestni = data[0],
             .prijmeni = data[2],
             .narozeni = data[6],
@@ -105,7 +105,7 @@ void nacist_ze_souboru(Seznam& s)
             .predchozi = nullptr,
         };
 
-        pridej_na_konec(s, &novy);
+        pridej_na_konec(s, novy);
     }
 
     soubor.close();
@@ -127,12 +127,12 @@ void vypis_od_zacatku(Seznam& s)
         if (pomocny->id_matky == -1)
             id_matky = "nezadano";
         else
-            id_matky = pomocny->id_matky;
+            id_matky = std::to_string(pomocny->id_matky);
 
         if (pomocny->id_otce == -1)
             id_otce = "nezadano";
         else
-            id_otce = pomocny->id_otce;
+            id_otce = std::to_string(pomocny->id_otce);
 
         cout
             << pocetosob + 1 << ". "
@@ -169,7 +169,6 @@ void vypis_od_zacatku(Seznam& s)
         datumpracovni = "-" + datumpracovni + "-";
 
         for (int j = 0; j < 3; j++) {
-            cout << datumpracovni;
             datumpracovni = datumpracovni.substr(1);
             int pomoc = datumpracovni.find_first_of("-");
             rok_mesic_den[j].assign(datumpracovni.substr(0, pomoc));
