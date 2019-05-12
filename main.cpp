@@ -287,6 +287,11 @@ void pridej_na_misto(Seznam& s, Clen* namiste)
         s.zarazka = namiste;
 }
 
+void smaz_seznam(Seznam& s){
+    while(!prazdny_seznam(s))
+    smaz_prvniho(s);
+}
+
 char vol_operaci(Seznam& s)
 {
     char volba;
