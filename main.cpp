@@ -48,7 +48,7 @@ void pridej_na_zacatek(Seznam& s, Clen* novy)
     }
 }
 
-void pridej_na_konec(Seznam& s, Clen *novy)
+void pridej_na_konec(Seznam& s, Clen* novy)
 {
     if (prazdny_seznam(s))
         pridej_na_zacatek(s, novy);
@@ -118,7 +118,7 @@ void vypis_od_zacatku(Seznam& s)
 
     cout << "Takto vypada Vas seznam:" << endl;
     cout << "Poradi - Jmeno - ID matka - Prijmeni - ID otce - vyska - vaha - datum narozeni - ID osoby" << endl;
-    cout << "------------------------------------------------------------------------" << endl;
+    cout << "------------------------------------------------------------------------------------------" << endl;
 
     while (pomocny != s.zarazka) {
         string id_otce;
@@ -208,23 +208,268 @@ void vypis_od_zacatku(Seznam& s)
         << pomocny->vyska << "m - "
         << pomocny->hmotnost
         << "kg"
-    << endl;
+    << endl << endl;
 }
 
-void count_list(Clen* c) {
-    cout << c->krestni << endl;
-    if (c->dalsi != nullptr)
-        count_list(c->dalsi);
+void smaz_prvniho (Seznam& s)
+{
+    if(prazdny_seznam(s))
+        return;
+    Clen* pomocny = s.hlava;
+    s.hlava = s.hlava->dalsi;
+    s.hlava->predchozi=pomocny->predchozi;
+    delete pomocny;
+}
+
+Clen* na_pozici(Seznam& s, unsigned int poradi)
+{
+    Clen* pomocny = s.hlava;
+    for(int i=1; i<poradi ; i++)
+        pomocny = pomocny->dalsi;
+    return pomocny;
+}
+
+void smaz_posledniho (Seznam& s)
+{
+    if(prazdny_seznam(s))
+        return;
+
+    else if(s.hlava==s.zarazka->predchozi)
+        smaz_prvniho(s);
+
+    else
+    {
+    Clen* pomocny = s.zarazka->predchozi;
+    s.zarazka->predchozi->predchozi->dalsi=s.zarazka;
+    s.zarazka->predchozi = s.zarazka->predchozi->predchozi;
+    delete pomocny;
+    }
+}
+
+void smaz_na (Seznam& s, Clen* mazany)
+{
+    if (mazany==s.hlava)
+        smaz_prvniho(s);
+    else if (mazany==s.zarazka->predchozi)
+        smaz_posledniho(s);
+    else
+    {
+    Clen* pomocny = mazany;
+    mazany->predchozi->dalsi=mazany->dalsi;
+    mazany->dalsi->predchozi=mazany->predchozi;
+    delete pomocny;
+    }
+}
+
+void smaz_vsechny(Seznam& s)
+{
+    while (!prazdny_seznam(s))
+        smaz_prvniho(s);
+}
+
+void pridej_na_misto (Seznam& s,Clen* namiste)
+{
+    if (prazdny_seznam(s) || namiste == s.hlava)
+        pridej_na_zacatek(s,namiste);
+
+    else if (namiste->predchozi == s.zarazka->predchozi)
+        pridej_na_konec(s,namiste);
+
+    else
+        namiste->predchozi = s.zarazka;
+        s.zarazka->dalsi = namiste;
+        s.zarazka = namiste;
+}
+
+char vol_operaci (Seznam& s)
+{
+    char volba;
+    cout<<"Co si prejete s Vasim seznamem delat?"<< endl;
+    if (prazdny_seznam(s))
+    {
+        cout<<"Pridat osobu ...... a" << endl;
+        cout << "Zadejte: ";
+        cin >> volba;
+        cout << endl;
+        while (volba!=97 && volba!=103)
+        {
+            cout << "Zadali jste neplatné písmeno.";
+            cin >> volba;
+        }
+    }
+
+    else
+    {
+        cout<<"Pridat osobu na zacatek ...... a" << endl;
+        cout<<"Pridat osobu na konec ...... b" << endl;
+        cout<<"Pridat osobu na konkretni misto ...... c" << endl;
+        cout<<"Smazat prvni osobu ...... d" << endl;
+        cout<<"Smazat posledni osobu ...... e" << endl;
+        cout<<"Smazat osobu na kokretnim miste ...... f" << endl;
+        cout<<"Smazat cely seznam ...... g" << endl;
+        cout << "Zadejte Vasi volbu: ";
+        cin >> volba;
+        cout << endl;
+        while (volba < 97 || volba > 103)
+            {
+                cout << "Zadali jste neplatne pismeno." << endl;
+                cin >> volba;
+                cout << endl;
+            }
+    }
+    return volba;
+}
+
+char proved_operaci (Seznam & s,char volba)
+{
+    string udaj [8];
+    if (volba=='a')
+    {
+
+            cout << "Napiste krestni jmeno osoby: ";
+            cin >> udaj [0];
+            cout << "Napiste prijmeni osoby: ";
+            cin >> udaj [1];
+            cout << "Napiste ID osoby: ";
+            cin >> udaj [2];
+            cout << "Napiste ID matky: ";
+            cin >> udaj [3];
+            cout << "Napiste ID otce: ";
+            cin >> udaj [4];
+            cout << "Napiste vysku osoby: ";
+            cin >> udaj [5];
+            cout << "Napiste vahu osoby: ";
+            cin >> udaj [6];
+            cout << "Napiste datum narozeni osoby (ve formatu YYYY-M-D): ";
+            cin >> udaj [7];
+
+            Clen* muj_novy = new Clen {
+                .krestni = udaj [0],
+                .prijmeni = udaj [1],
+                .narozeni = udaj [7],
+                .id_otce = stoi(udaj [4]),
+                .id_vlastni = stoi(udaj [2]),
+                .id_matky = stoi(udaj [3]),
+                .vyska = stoul(udaj [5]),
+                .hmotnost = stof(udaj [6]),
+
+                .dalsi = nullptr,
+                .predchozi = nullptr,
+            };
+
+            pridej_na_zacatek(s, muj_novy);
+    }
+    else if (volba=='b')
+    {
+
+            cout << "Napiste krestni jmeno osoby: ";
+            cin >> udaj [0];
+            cout << "Napiste prijmeni osoby: ";
+            cin >> udaj [1];
+            cout << "Napiste ID osoby: ";
+            cin >> udaj [2];
+            cout << "Napiste ID matky: ";
+            cin >> udaj [3];
+            cout << "Napiste ID otce: ";
+            cin >> udaj [4];
+            cout << "Napiste vysku osoby: ";
+            cin >> udaj [5];
+            cout << "Napiste vahu osoby: ";
+            cin >> udaj [6];
+            cout << "Napiste datum narozeni osoby (ve formatu YYYY-M-D): ";
+            cin >> udaj [7];
+
+           Clen* muj_novy = new Clen {
+                .krestni = udaj [0],
+                .prijmeni = udaj [1],
+                .narozeni = udaj [7],
+                .id_otce = stoi(udaj [4]),
+                .id_vlastni = stoi(udaj [2]),
+                .id_matky = stoi(udaj [3]),
+                .vyska = stoul(udaj [5]),
+                .hmotnost = stof(udaj [6]),
+
+                .dalsi = nullptr,
+                .predchozi = nullptr,
+            };
+
+            pridej_na_konec(s,muj_novy);
+
+
+    }
+    else if (volba=='c')
+    {
+
+        unsigned int misto;
+        cout << "Napiste na jake misto chcete pridat osobu: ";
+        cin >> misto;
+
+        cout << "Napiste krestni jmeno osoby: ";
+        cin >> udaj [0];
+        cout << "Napiste prijmeni osoby: ";
+        cin >> udaj [1];
+        cout << "Napiste ID osoby: ";
+        cin >> udaj [2];
+        cout << "Napiste ID matky: ";
+        cin >> udaj [3];
+        cout << "Napiste ID otce: ";
+        cin >> udaj [4];
+        cout << "Napiste vysku osoby: ";
+        cin >> udaj [5];
+        cout << "Napiste vahu osoby: ";
+        cin >> udaj [6];
+        cout << "Napiste datum narozeni osoby (ve formatu YYYY-M-D): ";
+        cin >> udaj [7];
+
+        Clen* muj_novy = new Clen {
+            .krestni = udaj [0],
+            .prijmeni = udaj [1],
+            .narozeni = udaj [7],
+            .id_otce = stoi(udaj [4]),
+            .id_vlastni = stoi(udaj [2]),
+            .id_matky = stoi(udaj [3]),
+            .vyska = stoul(udaj [5]),
+            .hmotnost = stof(udaj [6]),
+
+            .dalsi = nullptr,
+            .predchozi = nullptr,
+        };
+
+        pridej_na_misto(s,na_pozici(s,misto));
+    }
+    else if (volba=='d')
+    {
+        smaz_prvniho(s);
+    }
+    else if (volba=='e')
+    {
+        smaz_posledniho(s);
+    }
+    else if (volba=='f')
+    {
+        unsigned int misto;
+        cout << "Napiste poradi osoby, kterou chcete smazat: ";
+        cin >> misto;
+        smaz_na(s,na_pozici(s,misto));
+    }
+    else if (volba=='g')
+    {
+       smaz_vsechny(s);
+    }
+
+    vypis_od_zacatku(s);
+    return proved_operaci(s,vol_operaci(s));
 }
 
 int main()
 {
     Seznam S = vytvor_seznam();
 
-    cout << "Dobry den, tento program umozni praci se seznamem lidi." << endl;
-    cout << "Na zacatek vlozte soubok ukol1.txt do slozky s timto zdrojovym kodem a stisknete Enter" << endl;
+    cout << "Vlozte soubor ukol1.txt do slozky s timto zdrojovym kodem a stisknete Enter" << endl;
     cin.get();
     nacist_ze_souboru(S);
     vypis_od_zacatku(S);
+    proved_operaci(S,vol_operaci(S));
+
     return 0;
 }
