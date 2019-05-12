@@ -273,21 +273,34 @@ void smaz_vsechny(Seznam& s)
         smaz_prvniho(s);
 }
 
-void pridej_na_misto(Seznam& s, Clen* namiste)
+unsigned int delka_seznamu(Seznam& s)
 {
-    if (prazdny_seznam(s) || namiste == s.hlava)
-        pridej_na_zacatek(s, namiste);
-    else if (namiste->predchozi == s.zarazka->predchozi)
-        pridej_na_konec(s, namiste);
-    else
-    {
-        namiste->predchozi = s.zarazka;
-        s.zarazka->dalsi = namiste;
-        s.zarazka = namiste;
-    }
+    unsigned int delka = 0;
+    Clen* pomocny = s.hlava;
+    while ( (pomocny = pomocny->dalsi) )
+        delka++;
+    cout << "[WOWSO] délka: " << delka << endl;
+    return delka;
 }
 
+void pridej_na_misto(Seznam& s, Clen* novy, unsigned int index)
+{
+    if (index == 0)
+        pridej_na_zacatek(s, novy);
+    else if (index == delka_seznamu(s))
+        pridej_na_konec(s, novy);
+    else
+    {
+        Clen* pomocny = s.hlava;
+        for (int i = 1; i < index; i++) {
+            pomocny = pomocny->dalsi;
+        }
 
+        novy->dalsi = pomocny->dalsi;
+        novy->predchozi = pomocny;
+        pomocny->dalsi = novy;
+    }
+}
 
 char vol_operaci(Seznam& s)
 {
@@ -330,7 +343,7 @@ char vol_operaci(Seznam& s)
     return volba;
 }
 
-char proved_operaci (Seznam & s, char volba)
+char proved_operaci(Seznam & s, char volba)
 {
     string udaj [8];
     if (volba=='a')
@@ -442,7 +455,7 @@ char proved_operaci (Seznam & s, char volba)
             .predchozi = nullptr,
         };
 
-        pridej_na_misto(s,na_pozici(s,misto));
+        pridej_na_misto(s, muj_novy, misto - 1);
     }
     else if (volba=='d')
     {
