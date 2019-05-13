@@ -120,7 +120,7 @@ void vypis_od_zacatku(Seznam& s)
     cout << "Poradi - Jmeno - ID matka - Prijmeni - ID otce - vyska - vaha - datum narozeni - ID osoby" << endl;
     cout << "------------------------------------------------------------------------------------------" << endl;
 
-    while (pomocny != s.zarazka && pomocny != nullptr) {
+    while (pomocny != nullptr) {
         string id_otce;
         string id_matky;
 
@@ -279,7 +279,6 @@ unsigned int delka_seznamu(Seznam& s)
     Clen* pomocny = s.hlava;
     while ( (pomocny = pomocny->dalsi) )
         delka++;
-    cout << "[WOWSO] délka: " << delka << endl;
     return delka;
 }
 
@@ -414,7 +413,7 @@ char proved_operaci(Seznam & s, char volba)
                 .predchozi = nullptr,
             };
 
-            pridej_na_konec(s,muj_novy);
+            pridej_na_konec(s, muj_novy);
 
 
     }
