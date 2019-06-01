@@ -163,7 +163,7 @@ void vypis_od_zacatku(Seznam& s)
     int pom = 0;
     pomocny = s.hlava;
 
-    while (pomocny != s.zarazka) {
+    while (pomocny != nullptr) {
         string datumpracovni;
         datumpracovni.assign(pomocny->narozeni);
         datumpracovni = "-" + datumpracovni + "-";
